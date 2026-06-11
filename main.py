@@ -49,22 +49,29 @@ def get_points(result):
         return 0
     
 team_matches["points"] = team_matches["team_result"].apply(get_points)
+latest_year = team_matches["date"].dt.year.max()
+team_matches["year"] = team_matches["date"].dt.year
+team_matches["recency_weight"] = 1 / (latest_year - team_matches["year"] + 1)
 
-team_summary = team_matches.groupby("team").agg(
-    matches_played = ("team", "count"),
-    avg_goals_for = ("goals_for", "mean"),
-    avg_goals_against = ("goals_against", "mean"),
-    avg_points = ("points", "mean")
+def weight_average(values, weights):
+    return (values * weights).sum() / weights.sum()
+team_summary = team_matches.groupby("team").apply(
+    lambda x: pd.Series({
+        "matches_played": len(x),
+        "avg_goals_for": weight_average(x["goals_for"], x["recency_weight"]),
+        "avg_goals_against": weight_average(x["goals_against"], x["recency_weight"]),
+        "avg_points": weight_average(x["points"], x["recency_weight"])
+    })
 ).reset_index()
 
 def predict_match(team_a, team_b):
     team_a_data = team_summary[team_summary["team"] == team_a]
     team_b_data = team_summary[team_summary["team"] == team_b]
     if team_a_data.empty:
-        print(f"No data for team: {team_a}")
+        return {"Error": f"No data for team: {team_a}"}
         
     if team_b_data.empty:
-        print(f"No data for team: {team_b}")
+        return {"Error": f"No data for team: {team_b}"}
 
     team_a_points = team_a_data["avg_points"].values[0]
     team_b_points = team_b_data["avg_points"].values[0]
@@ -103,5 +110,5 @@ def predict_match(team_a, team_b):
 
     }
 
-prediction = predict_match("Mexico", "South Africa")
+prediction = predict_match("South Korea", "Czech Republic")
 print(prediction)
