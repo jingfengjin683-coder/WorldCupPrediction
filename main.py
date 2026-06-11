@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 
 df = pd.read_csv("results.csv")
+market_values = pd.read_csv("team_market_values.csv")
 
 df["date"] = pd.to_datetime(df["date"])
 
@@ -64,9 +65,12 @@ team_summary = team_matches.groupby("team").apply(
     })
 ).reset_index()
 
+team_summary = team_summary.merge(market_values, on="team", how="left")
+
 def predict_match(team_a, team_b):
     team_a_data = team_summary[team_summary["team"] == team_a]
     team_b_data = team_summary[team_summary["team"] == team_b]
+
     if team_a_data.empty:
         return {"Error": f"No data for team: {team_a}"}
         
@@ -82,13 +86,20 @@ def predict_match(team_a, team_b):
     team_b_goals_for = team_b_data["avg_goals_for"].values[0]
     team_b_goals_against = team_b_data["avg_goals_against"].values[0]
 
+    market_value_a = team_a_data["market_value_million_eur"].values[0]
+    market_value_b = team_b_data["market_value_million_eur"].values[0]
+
     expected_goals_a = (team_a_goals_for + team_b_goals_against) / 2
     expected_goals_b = (team_b_goals_for + team_a_goals_against) / 2
 
     predicted_score_a = round(expected_goals_a)
     predicted_score_b = round(expected_goals_b)
 
-    difference = team_a_points - team_b_points
+    points_difference = team_a_points - team_b_points
+
+    market_value_difference = np.log1p(market_value_a) - np.log1p(market_value_b)
+
+    difference = points_difference + 0.15 * market_value_difference
 
     if difference > 0.2:
         predicted_result = team_a
@@ -110,5 +121,5 @@ def predict_match(team_a, team_b):
 
     }
 
-prediction = predict_match("South Korea", "Czech Republic")
+prediction = predict_match("Germany", "Curaçao")
 print(prediction)
