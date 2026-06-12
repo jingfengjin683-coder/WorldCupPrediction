@@ -3,6 +3,8 @@ import numpy as np
 
 df = pd.read_csv("results.csv")
 market_values = pd.read_csv("team_market_values.csv")
+fifa_rankings = pd.read_csv("fifa_rankings_all_teams.csv")
+host_teams = ["Mexico", "United States", "Canada"]
 
 df["date"] = pd.to_datetime(df["date"])
 
@@ -54,6 +56,13 @@ latest_year = team_matches["date"].dt.year.max()
 team_matches["year"] = team_matches["date"].dt.year
 team_matches["recency_weight"] = 1 / (latest_year - team_matches["year"] + 1)
 
+opponent_strength = fifa_rankings[["team", "fifa_points"]].rename(columns={"team": "opponent", "fifa_points": "opponent_fifa_points"})
+team_matches = team_matches.merge(opponent_strength, on="opponent", how="left")
+average_fifa_points = fifa_rankings["fifa_points"].mean()
+team_matches["opponent_fifa_points"] = team_matches["opponent_fifa_points"].fillna(average_fifa_points)
+team_matches["opponent_strength_multiplier"] = (team_matches["opponent_fifa_points"] / average_fifa_points)
+team_matches["adjusted_points"] = (team_matches["points"] * team_matches["opponent_strength_multiplier"])
+
 def weight_average(values, weights):
     return (values * weights).sum() / weights.sum()
 team_summary = team_matches.groupby("team").apply(
@@ -61,7 +70,7 @@ team_summary = team_matches.groupby("team").apply(
         "matches_played": len(x),
         "avg_goals_for": weight_average(x["goals_for"], x["recency_weight"]),
         "avg_goals_against": weight_average(x["goals_against"], x["recency_weight"]),
-        "avg_points": weight_average(x["points"], x["recency_weight"])
+        "avg_points": weight_average(x["adjusted_points"], x["recency_weight"])
     })
 ).reset_index()
 
@@ -99,6 +108,13 @@ def predict_match(team_a, team_b):
 
     market_value_difference = np.log1p(market_value_a) - np.log1p(market_value_b)
 
+    host_difference = 0
+    host_advantages = 0.2
+    if team_a in host_teams:
+        host_difference += host_advantages
+    if team_b in host_teams:
+        host_difference -= host_advantages
+
     difference = points_difference + 0.15 * market_value_difference
 
     if difference > 0.2:
@@ -108,7 +124,7 @@ def predict_match(team_a, team_b):
     else:
         predicted_result = "draw"
 
-    confidence = min(90, 50 + abs(difference) * 20)
+    confidence = min(100, abs(difference) * 40)
 
     reason = f"{team_a} has an average of {team_a_points:.2f} points per match, while {team_b} has {team_b_points:.2f} points per match."
 

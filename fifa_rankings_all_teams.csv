@@ -1,0 +1,212 @@
+team,fifa_name,country_code,fifa_rank,fifa_points
+Argentina,Argentina,ARG,1,1877.27
+Spain,Spain,ESP,2,1874.71
+France,France,FRA,3,1870.7
+England,England,ENG,4,1828.02
+Portugal,Portugal,POR,5,1767.85
+Brazil,Brazil,BRA,6,1765.86
+Morocco,Morocco,MAR,7,1755.1
+Netherlands,Netherlands,NED,8,1753.57
+Belgium,Belgium,BEL,9,1742.24
+Germany,Germany,GER,10,1735.77
+Croatia,Croatia,CRO,11,1714.87
+Italy,Italy,ITA,12,1704.73
+Mexico,Mexico,MEX,13,1700.98
+Colombia,Colombia,COL,14,1698.35
+Senegal,Senegal,SEN,15,1684.07
+Uruguay,Uruguay,URU,16,1673.07
+United States,USA,USA,17,1671.23
+Japan,Japan,JPN,18,1661.58
+Switzerland,Switzerland,SUI,19,1650.06
+Iran,IR Iran,IRN,20,1619.58
+Denmark,Denmark,DEN,21,1619.47
+South Korea,Korea Republic,KOR,22,1612.55
+Turkey,Türkiye,TUR,23,1605.73
+Ecuador,Ecuador,ECU,24,1598.52
+Austria,Austria,AUT,25,1597.4
+Nigeria,Nigeria,NGA,26,1585.02
+Australia,Australia,AUS,27,1579.34
+Algeria,Algeria,ALG,28,1571.03
+Egypt,Egypt,EGY,29,1562.37
+Canada,Canada,CAN,30,1559.48
+Norway,Norway,NOR,31,1557.44
+Ukraine,Ukraine,UKR,32,1549.29
+Ivory Coast,Côte d'Ivoire,CIV,33,1540.87
+Panama,Panama,PAN,34,1539.16
+Russia,Russia,RUS,35,1529.6
+Poland,Poland,POL,36,1526.18
+Wales,Wales,WAL,37,1516.95
+Sweden,Sweden,SWE,38,1509.79
+Hungary,Hungary,HUN,39,1506.39
+Paraguay,Paraguay,PAR,40,1505.35
+Scotland,Scotland,SCO,41,1503.34
+Serbia,Serbia,SRB,42,1502.13
+Czech Republic,Czechia,CZE,43,1484.82
+Cameroon,Cameroon,CMR,44,1481.24
+Tunisia,Tunisia,TUN,45,1476.41
+DR Congo,Congo DR,COD,46,1474.43
+Slovakia,Slovakia,SVK,47,1473.66
+Greece,Greece,GRE,48,1473.19
+Venezuela,Venezuela,VEN,49,1469.18
+Uzbekistan,Uzbekistan,UZB,50,1458.73
+Chile,Chile,CHI,51,1458.2
+Peru,Peru,PER,52,1457.69
+Costa Rica,Costa Rica,CRC,53,1456.03
+Romania,Romania,ROU,54,1455.89
+Mali,Mali,MLI,55,1455.59
+Qatar,Qatar,QAT,56,1450.31
+Iraq,Iraq,IRQ,57,1446.28
+Republic of Ireland,Republic of Ireland,IRL,58,1441.1
+Slovenia,Slovenia,SVN,59,1441.09
+Saudi Arabia,Saudi Arabia,KSA,60,1423.88
+South Africa,South Africa,RSA,61,1414.88
+Burkina Faso,Burkina Faso,BFA,62,1406.99
+Jordan,Jordan,JOR,63,1387.74
+Bosnia and Herzegovina,Bosnia and Herzegovina,BIH,64,1387.22
+Honduras,Honduras,HON,65,1378.97
+Albania,Albania,ALB,66,1376.03
+Cape Verde,Cabo Verde,CPV,67,1371.11
+United Arab Emirates,United Arab Emirates,UAE,68,1370.47
+North Macedonia,North Macedonia,MKD,69,1369.16
+Northern Ireland,Northern Ireland,NIR,70,1365.3
+Jamaica,Jamaica,JAM,71,1357.84
+Georgia,Georgia,GEO,72,1355.26
+Ghana,Ghana,GHA,73,1346.88
+Iceland,Iceland,ISL,74,1342.77
+Finland,Finland,FIN,75,1341.92
+Israel,Israel,ISR,76,1333.9
+Bolivia,Bolivia,BOL,77,1326.0
+Kosovo,Kosovo,KOS,78,1319.12
+Oman,Oman,OMA,79,1306.9
+Montenegro,Montenegro,MNE,80,1301.98
+Guinea,Guinea,GUI,81,1295.6
+Curaçao,Curaçao,CUW,82,1294.77
+Haiti,Haiti,HAI,83,1293.1
+Syria,Syria,SYR,84,1283.05
+New Zealand,New Zealand,NZL,85,1275.58
+Gabon,Gabon,GAB,86,1272.51
+Bulgaria,Bulgaria,BUL,87,1271.68
+Angola,Angola,ANG,88,1265.58
+Uganda,Uganda,UGA,89,1264.09
+Zambia,Zambia,ZAM,90,1255.82
+China PR,China PR,CHN,91,1254.81
+Bahrain,Bahrain,BHR,92,1254.41
+Benin,Benin,BEN,93,1252.17
+Thailand,Thailand,THA,94,1250.8
+Palestine,Palestine,PLE,95,1243.71
+Belarus,Belarus,BLR,96,1242.88
+Guatemala,Guatemala,GUA,97,1238.74
+Luxembourg,Luxembourg,LUX,98,1232.82
+Vietnam,Vietnam,VIE,99,1225.68
+El Salvador,El Salvador,SLV,100,1225.34
+Tajikistan,Tajikistan,TJK,101,1224.19
+Trinidad and Tobago,Trinidad and Tobago,TRI,102,1219.59
+Mozambique,Mozambique,MOZ,103,1218.62
+Madagascar,Madagascar,MAD,104,1202.69
+Equatorial Guinea,Equatorial Guinea,EQG,105,1195.2
+Kyrgyzstan,Kyrgyz Republic,KGZ,106,1192.16
+Armenia,Armenia,ARM,107,1189.63
+Comoros,Comoros,COM,108,1187.91
+Kenya,Kenya,KEN,109,1185.08
+Libya,Libya,LBY,110,1182.08
+Kazakhstan,Kazakhstan,KAZ,111,1180.78
+Tanzania,Tanzania,TAN,112,1180.27
+Mauritania,Mauritania,MTN,113,1176.68
+Niger,Niger,NIG,114,1175.33
+Lebanon,Lebanon,LBN,115,1172.22
+Gambia,The Gambia,GAM,116,1159.64
+Sudan,Sudan,SDN,117,1157.22
+Indonesia,Indonesia,IDN,118,1157.14
+Togo,Togo,TOG,119,1152.76
+North Korea,Korea DPR,PRK,120,1151.05
+Namibia,Namibia,NAM,121,1148.84
+Sierra Leone,Sierra Leone,SLE,122,1147.56
+Faroe Islands,Faroe Islands,FRO,123,1136.59
+Cyprus,Cyprus,CYP,124,1133.25
+Suriname,Suriname,SUR,125,1132.43
+Azerbaijan,Azerbaijan,AZE,126,1132.0
+Estonia,Estonia,EST,127,1130.64
+Rwanda,Rwanda,RWA,128,1126.62
+Malawi,Malawi,MWI,129,1122.05
+Zimbabwe,Zimbabwe,ZIM,130,1119.78
+Nicaragua,Nicaragua,NCA,131,1114.63
+Guinea-Bissau,Guinea-Bissau,GNB,132,1108.38
+Kuwait,Kuwait,KUW,133,1106.47
+Congo,Congo,CGO,134,1105.96
+Philippines,Philippines,PHI,135,1100.95
+Malaysia,Malaysia,MAS,136,1086.22
+Latvia,Latvia,LVA,137,1085.66
+India,India,IND,138,1084.93
+Central African Republic,Central African Republic,CTA,139,1080.82
+Liberia,Liberia,LBR,140,1080.44
+Turkmenistan,Turkmenistan,TKM,141,1078.65
+Burundi,Burundi,BDI,142,1078.01
+Ethiopia,Ethiopia,ETH,143,1077.52
+Dominican Republic,Dominican Republic,DOM,144,1076.5
+Yemen,Yemen,YEM,145,1065.24
+Lesotho,Lesotho,LES,146,1064.29
+Botswana,Botswana,BOT,147,1063.63
+Singapore,Singapore,SGP,148,1057.95
+Lithuania,Lithuania,LTU,149,1056.85
+Guyana,Guyana,GUY,150,1049.32
+New Caledonia,New Caledonia,NCL,151,1036.95
+Saint Kitts and Nevis,St Kitts and Nevis,SKN,152,1036.33
+Solomon Islands,Solomon Islands,SOL,153,1031.89
+Puerto Rico,Puerto Rico,PUR,154,1024.3
+Fiji,Fiji,FIJ,155,1024.17
+Hong Kong,"Hong Kong, China",HKG,156,1024.16
+Tahiti,Tahiti,TAH,157,1019.04
+Myanmar,Myanmar,MYA,158,1010.91
+Moldova,Moldova,MDA,159,1008.24
+Vanuatu,Vanuatu,VAN,160,1002.53
+Malta,Malta,MLT,161,992.79
+Antigua and Barbuda,Antigua and Barbuda,ATG,162,986.58
+Grenada,Grenada,GRN,163,981.82
+Cuba,Cuba,CUB,164,981.42
+Eswatini,Eswatini,SWZ,165,979.01
+Saint Lucia,St Lucia,LCA,166,976.71
+Bermuda,Bermuda,BER,167,975.05
+Papua New Guinea,Papua New Guinea,PNG,168,974.9
+South Sudan,South Sudan,SSD,169,970.94
+Saint Vincent and the Grenadines,St Vincent and the Grenadines,VIN,170,968.27
+Afghanistan,Afghanistan,AFG,171,968.07
+Andorra,Andorra,AND,172,946.43
+Maldives,Maldives,MDV,173,943.92
+Chinese Taipei,Chinese Taipei,TPE,174,923.78
+Cambodia,Cambodia,CAM,175,922.32
+Montserrat,Montserrat,MSR,176,916.75
+Nepal,Nepal,NEP,177,914.54
+Mauritius,Mauritius,MRI,178,911.49
+Barbados,Barbados,BRB,179,909.89
+Belize,Belize,BLZ,180,907.0
+Bangladesh,Bangladesh,BAN,181,902.93
+Dominica,Dominica,DMA,182,897.69
+Chad,Chad,CHA,183,896.85
+Eritrea,Eritrea,ERI,184,887.06
+Laos,Laos,LAO,185,885.03
+Cook Islands,Cook Islands,COK,186,877.53
+Sri Lanka,Sri Lanka,SRI,187,876.86
+Samoa,Samoa,SAM,188,876.41
+Aruba,Aruba,ARU,189,875.61
+Mongolia,Mongolia,MNG,190,874.47
+American Samoa,American Samoa,ASA,191,871.61
+Bhutan,Bhutan,BHU,192,870.81
+Macau,Macau,MAC,193,858.03
+Brunei,Brunei Darussalam,BRU,194,857.73
+São Tomé and Príncipe,São Tomé and Príncipe,STP,195,855.44
+Djibouti,Djibouti,DJI,196,853.58
+Cayman Islands,Cayman Islands,CAY,197,850.06
+Pakistan,Pakistan,PAK,198,840.28
+Somalia,Somalia,SOM,199,839.17
+Tonga,Tonga,TGA,200,835.64
+Timor-Leste,Timor-Leste,TLS,201,831.0
+Gibraltar,Gibraltar,GIB,202,820.26
+Guam,Guam,GUM,203,819.54
+Seychelles,Seychelles,SEY,204,804.16
+Turks and Caicos Islands,Turks and Caicos Islands,TCA,205,803.98
+Liechtenstein,Liechtenstein,LIE,206,797.7
+Bahamas,Bahamas,BAH,207,786.82
+US Virgin Islands,US Virgin Islands,VIR,208,779.76
+British Virgin Islands,British Virgin Islands,VGB,209,777.41
+Anguilla,Anguilla,AIA,210,760.25
+San Marino,San Marino,SMR,211,721.2
