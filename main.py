@@ -63,18 +63,23 @@ team_matches["opponent_fifa_points"] = team_matches["opponent_fifa_points"].fill
 team_matches["opponent_strength_multiplier"] = (team_matches["opponent_fifa_points"] / average_fifa_points)
 team_matches["adjusted_points"] = (team_matches["points"] * team_matches["opponent_strength_multiplier"])
 
+team_matches["adjusted_goals_for"] = (team_matches["goals_for"] * team_matches["opponent_strength_multiplier"])
+team_matches["adjusted_goals_against"] = (team_matches["goals_against"] / team_matches["opponent_strength_multiplier"])
+
 def weight_average(values, weights):
     return (values * weights).sum() / weights.sum()
 team_summary = team_matches.groupby("team").apply(
     lambda x: pd.Series({
         "matches_played": len(x),
-        "avg_goals_for": weight_average(x["goals_for"], x["recency_weight"]),
-        "avg_goals_against": weight_average(x["goals_against"], x["recency_weight"]),
+        "avg_goals_for": weight_average(x["adjusted_goals_for"], x["recency_weight"]),
+        "avg_goals_against": weight_average(x["adjusted_goals_against"], x["recency_weight"]),
         "avg_points": weight_average(x["adjusted_points"], x["recency_weight"])
     })
 ).reset_index()
 
+fifa_rankings = fifa_rankings[["team", "fifa_rank", "fifa_points"]]
 team_summary = team_summary.merge(market_values, on="team", how="left")
+team_summary = team_summary.merge(fifa_rankings, on="team", how="left")
 
 def predict_match(team_a, team_b):
     team_a_data = team_summary[team_summary["team"] == team_a]
@@ -98,15 +103,27 @@ def predict_match(team_a, team_b):
     market_value_a = team_a_data["market_value_million_eur"].values[0]
     market_value_b = team_b_data["market_value_million_eur"].values[0]
 
+    team_a_fifa = team_a_data["fifa_points"].values[0]
+    team_b_fifa = team_b_data["fifa_points"].values[0]
+
     expected_goals_a = (team_a_goals_for + team_b_goals_against) / 2
     expected_goals_b = (team_b_goals_for + team_a_goals_against) / 2
-
-    predicted_score_a = round(expected_goals_a)
-    predicted_score_b = round(expected_goals_b)
 
     points_difference = team_a_points - team_b_points
 
     market_value_difference = np.log1p(market_value_a) - np.log1p(market_value_b)
+    fifa_difference = (team_a_fifa - team_b_fifa) / 400
+
+    goal_adjustment = (0.2 * fifa_difference + 0.1 * market_value_difference)
+
+    expected_goals_a = expected_goals_a + goal_adjustment
+    expected_goals_b = expected_goals_b - goal_adjustment
+
+    expected_goals_a = max(0, expected_goals_a)
+    expected_goals_b = max(0, expected_goals_b)
+
+    predicted_score_a = round(expected_goals_a)
+    predicted_score_b = round(expected_goals_b)
 
     host_difference = 0
     host_advantages = 0.2
@@ -115,16 +132,17 @@ def predict_match(team_a, team_b):
     if team_b in host_teams:
         host_difference -= host_advantages
 
-    difference = points_difference + 0.15 * market_value_difference
+    difference = points_difference + 0.15 * market_value_difference + 0.3 * fifa_difference + host_difference
 
-    if difference > 0.2:
+    if predicted_score_a > predicted_score_b:
         predicted_result = team_a
-    elif difference < -0.2:
+    elif predicted_score_a < predicted_score_b:
         predicted_result = team_b
     else:
         predicted_result = "draw"
 
     confidence = min(100, abs(difference) * 40)
+
 
     reason = f"{team_a} has an average of {team_a_points:.2f} points per match, while {team_b} has {team_b_points:.2f} points per match."
 
@@ -137,5 +155,5 @@ def predict_match(team_a, team_b):
 
     }
 
-prediction = predict_match("Germany", "Curaçao")
+prediction = predict_match("Canada", "Bosnia and Herzegovina")
 print(prediction)
