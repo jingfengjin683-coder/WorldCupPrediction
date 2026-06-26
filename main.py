@@ -84,14 +84,108 @@ fifa_rankings = fifa_rankings[["team", "fifa_rank", "fifa_points"]]
 team_summary = team_summary.merge(market_values, on="team", how="left")
 team_summary = team_summary.merge(fifa_rankings, on="team", how="left")
 
+home_team_summary = (
+    team_matches[team_matches["is_home"] == 1]
+    .groupby("team")
+    .apply(
+        lambda x: pd.Series({
+            "home_avg_goals_for": weight_average(
+                x["adjusted_goals_for"],
+                x["recency_weight"]
+            ),
+            "home_avg_goals_against": weight_average(
+                x["adjusted_goals_against"],
+                x["recency_weight"]
+            )
+        })
+    )
+    .reset_index()
+)
+
+away_team_summary = (
+    team_matches[team_matches["is_home"] == 0]
+    .groupby("team")
+    .apply(
+        lambda x: pd.Series({
+            "away_avg_goals_for": weight_average(
+                x["adjusted_goals_for"],
+                x["recency_weight"]
+            ),
+            "away_avg_goals_against": weight_average(
+                x["adjusted_goals_against"],
+                x["recency_weight"]
+            )
+        })
+    )
+    .reset_index()
+)
+team_summary = team_summary.merge(home_team_summary, on="team", how="left")
+team_summary = team_summary.merge(away_team_summary, on="team", how="left")
 global_average_fifa_points = fifa_rankings["fifa_points"].mean()
 global_median_fifa_ranking = fifa_rankings["fifa_rank"].median()
 
 team_summary["fifa_points"] = team_summary["fifa_points"].fillna(global_average_fifa_points)
-team_summary["fifa_rank"] = team_summary["fifa_points"].fillna(global_median_fifa_ranking)
+team_summary["fifa_rank"] = team_summary["fifa_rank"].fillna(global_median_fifa_ranking)
+
+def get_last_five_form(team, before_date):
+    before_date = pd.to_datetime(before_date)
+    previous_matches = df[(((df["home_team"] == team) | (df["away_team"] == team)) & (df["date"] < before_date))].copy()
+    previous_matches = previous_matches.sort_values("date", ascending = False).head(5)
+    if len(previous_matches) == 0:
+        return {
+            "last_5_avg_matches": 0,
+            "last_5_goals_performance": 0,
+            "last_5_matches_played": 0
+        }
+    fifa_points_lookup = fifa_rankings.set_index("team")["fifa_points"].to_dict()
+    average_fifa_points = fifa_rankings["fifa_points"].mean()
+
+    total_points = 0
+    total_goals = 0
+    total_weight = 0
+    prediction_year = before_date.year
+
+    for _, match in previous_matches.iterrows():
+        if match["home_team"] == team:
+            opponent = match["away_team"]
+            goals_for = match["home_score"]
+            goals_against = match["away_score"]
+        else:
+            opponent = match["home_team"]
+            goals_for = match["away_score"]
+            goals_against = match["home_score"]
+        
+        match_year = match["date"].year
+        recency_weight = 1 / (prediction_year - match_year + 1)
+        
+        opponent_fifa_points = fifa_points_lookup.get(opponent, average_fifa_points)
+        team_fifa_points = fifa_points_lookup.get(team, average_fifa_points)
+        strength_difference = (team_fifa_points - opponent_fifa_points) / 400
+        expected_points = 1.5 + strength_difference
+        expected_points = max(0.2, min(2.8, expected_points))
+        actual_goal_difference = goals_for - goals_against
+        expected_goal_difference = 0.35 * strength_difference
+  
+        if goals_for > goals_against:
+            points = 3
+        elif goals_for == goals_against:
+            points = 1
+        else:
+            points = 0
+        performance_difference = points - expected_points
+        goal_performance = (actual_goal_difference - expected_goal_difference)
+        total_points += performance_difference * recency_weight
+        total_goals += goal_performance * recency_weight
+        total_weight += recency_weight
+
+    return{
+        "last_5_points_performance": total_points / total_weight,
+        "last_5_goals_performance": total_goals / total_weight,
+        "last_5_matches_played": len(previous_matches)
+    }
 
 
-def predict_match(team_a, team_b, match_date = None):
+def predict_match(team_a, team_b, match_date = None, neutral = True):
     team_a_data = team_summary[team_summary["team"] == team_a]
     team_b_data = team_summary[team_summary["team"] == team_b]
 
@@ -110,15 +204,44 @@ def predict_match(team_a, team_b, match_date = None):
     team_b_goals_for = team_b_data["avg_goals_for"].values[0]
     team_b_goals_against = team_b_data["avg_goals_against"].values[0]
 
+    team_a_home_goals_for =  team_a_data["home_avg_goals_for"].values[0]
+    team_a_home_goals_against = team_a_data["home_avg_goals_against"].values[0]
+
+    team_b_away_goals_for =  team_b_data["away_avg_goals_for"].values[0]
+    team_b_away_goals_against = team_b_data["away_avg_goals_against"].values[0]
+
+    team_a_recent_form = get_last_five_form(team_a, match_date)
+    team_b_recent_form = get_last_five_form(team_b, match_date)
+
+    recent_points_difference =  (team_a_recent_form["last_5_points_performance"] - team_b_recent_form["last_5_points_performance"])
+    recent_goals_difference =  (team_a_recent_form["last_5_goals_performance"] - team_b_recent_form["last_5_goals_performance"])
+    
     market_value_a = team_a_data["market_value_million_eur"].values[0]
     market_value_b = team_b_data["market_value_million_eur"].values[0]
 
     team_a_fifa = team_a_data["fifa_points"].values[0]
     team_b_fifa = team_b_data["fifa_points"].values[0]
 
-    expected_goals_a = (team_a_goals_for + team_b_goals_against) / 2
-    expected_goals_b = (team_b_goals_for + team_a_goals_against) / 2
+    if neutral:
+        expected_goals_a = (team_a_goals_for + team_b_goals_against) / 2
+        expected_goals_b = (team_b_goals_for + team_a_goals_against) / 2
+    else:
+        if pd.isna(team_a_home_goals_for):
+            team_a_home_goals_for = team_a_goals_for
 
+        if pd.isna(team_a_home_goals_for):
+            team_a_home_goals_against =  team_a_goals_against
+
+        if pd.isna(team_b_away_goals_for):
+            team_b_away_goals_for = team_b_goals_for
+
+        if pd.isna(team_b_away_goals_against):
+            team_b_home_goals_for = team_b_goals_against 
+
+        expected_goals_a = (team_a_home_goals_for + team_b_away_goals_against) / 2
+
+        expected_goals_b = (team_a_home_goals_against + team_b_away_goals_for) / 2
+     
     points_difference = team_a_points - team_b_points
     if pd.isna(market_value_a) or pd.isna(market_value_b):
         market_value_difference = 0
@@ -149,7 +272,7 @@ def predict_match(team_a, team_b, match_date = None):
         if team_b in host_teams:
             host_difference -= host_advantages
 
-    difference = points_difference + 0.20 * market_value_difference + 0.7 * fifa_difference + host_difference
+    difference = points_difference + 0.20 * market_value_difference + 0.7 * fifa_difference + host_difference + 0.35 * recent_points_difference + 0.15 * recent_goals_difference
 
     if difference > 0.2:
         predicted_result = team_a
@@ -191,8 +314,8 @@ def get_actual_winner(row):
 
 validation_results = []
 
-for index, row in validation_df.iterrows():
-    prediction = predict_match(row["home_team"], row["away_team"], row["date"])
+for index, row in test_df.iterrows():
+    prediction = predict_match(row["home_team"], row["away_team"], row["date"], row["neutral"])
 
     if "Error" in prediction:
         continue
